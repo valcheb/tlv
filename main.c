@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #define TYPE_U8  0x12
 #define TYPE_U16 0x22
@@ -18,15 +19,6 @@ const uint32_t U32  = 0xFACEC0DE;
 /*#define TEST_TLV_ELEM(elem, val) \
     test_tlv_elem(elem, TYPE_##val, sizeof(val), &val)*/
 
-void test_assert(bool res)
-{
-    if (!res)
-    {
-        printf("Error\n");
-        exit(1);
-    }
-}
-
 void test_add()
 {
     tlv_t tlv;
@@ -37,22 +29,22 @@ void test_add()
     elem.type = TYPE_U8;
     elem.length = sizeof(U8);
     *(uint8_t *)elem.value = U8;
-    test_assert(tlv_add(&tlv, &elem));
+    assert(tlv_add(&tlv, &elem) == true);
 
     elem.type = TYPE_U8;
     elem.length = sizeof(U8_2);
     *(uint8_t *)elem.value = U8_2;
-    test_assert(tlv_add(&tlv, &elem));
+    assert(tlv_add(&tlv, &elem) == true);
 
     elem.type = TYPE_U16;
     elem.length = sizeof(U16);
     *(uint8_t *)elem.value = U16;
-    test_assert(tlv_add(&tlv, &elem));
+    assert(tlv_add(&tlv, &elem) == true);
 
     elem.type = TYPE_U32;
     elem.length = sizeof(U32);
     *(uint8_t *)elem.value = U32;
-    test_assert(tlv_add(&tlv, &elem));
+    assert(tlv_add(&tlv, &elem) == true);
 }
 
 /*void test_add_and_read_different_sizes(const utest_stats_t *stats, void *user_ctx)
