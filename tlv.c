@@ -17,7 +17,7 @@ void tlv_init(tlv_t* tlv, uint8_t *buf, int size)
 bool tlv_add(tlv_t* tlv, const tlv_elem_t *elem)
 {
     int tsize = sizeof(elem->type) + sizeof(elem->length) + elem->length;
-    if ( tsize > (tlv->end - tlv->begin))
+    if ( tsize > tlv->size - (tlv->end - tlv->begin))
     {
         return false;
     }
