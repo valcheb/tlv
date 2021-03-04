@@ -24,7 +24,7 @@ typedef struct tlv_s
 tlv_t;
 
 void tlv_init(tlv_t* tlv, uint8_t *buf, int size);
-bool tlv_add(tlv_t* tlv, const tlv_elem_t *elem);
+bool tlv_add(tlv_t* tlv, tlv_type_t type, tlv_len_t length, uint8_t *value);
 tlv_elem_t* tlv_begin(const tlv_t* tlv);
 tlv_elem_t* tlv_next(const tlv_elem_t* elem);
 tlv_elem_t* tlv_end(const tlv_t* tlv);

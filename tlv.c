@@ -14,15 +14,18 @@ void tlv_init(tlv_t* tlv, uint8_t *buf, int size)
     tlv->end   = buf;
 }
 
-bool tlv_add(tlv_t* tlv, const tlv_elem_t *elem)
+bool tlv_add(tlv_t* tlv, tlv_type_t type, tlv_len_t length, uint8_t *value)
 {
-    int tsize = sizeof(elem->type) + sizeof(elem->length) + elem->length;
+    int tsize = sizeof(tlv_elem_t) + length;
     if ( tsize > tlv->size - (tlv->end - tlv->begin))
     {
         return false;
     }
 
-    memcpy((tlv_elem_t *)tlv->end, elem, tsize);
+    tlv_elem_t *elem = (tlv_elem_t *)tlv->end;
+    elem->type = type;
+    elem->length = length;
+    memcpy(elem->value, value, length);
 
     tlv->end += tsize;
 
