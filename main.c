@@ -24,27 +24,10 @@ void test_add()
     tlv_t tlv;
     tlv_init(&tlv, TLV_BUF, TLV_SIZE);
 
-    tlv_elem_t elem;
-
-    elem.type = TYPE_U8;
-    elem.length = sizeof(U8);
-    *(uint8_t *)elem.value = U8;
-    assert(tlv_add(&tlv, &elem) == true);
-
-    elem.type = TYPE_U8;
-    elem.length = sizeof(U8_2);
-    *(uint8_t *)elem.value = U8_2;
-    assert(tlv_add(&tlv, &elem) == true);
-
-    elem.type = TYPE_U16;
-    elem.length = sizeof(U16);
-    *(uint8_t *)elem.value = U16;
-    assert(tlv_add(&tlv, &elem) == true);
-
-    elem.type = TYPE_U32;
-    elem.length = sizeof(U32);
-    *(uint8_t *)elem.value = U32;
-    assert(tlv_add(&tlv, &elem) == true);
+    assert(tlv_add(&tlv, TYPE_U8, sizeof(U8), (uint8_t *)&U8) == true);
+    assert(tlv_add(&tlv, TYPE_U8, sizeof(U8_2), (uint8_t *)&U8_2) == true);
+    assert(tlv_add(&tlv, TYPE_U8, sizeof(U16), (uint8_t *)&U16) == true);
+    assert(tlv_add(&tlv, TYPE_U8, sizeof(U32), (uint8_t *)&U32) == true);
 }
 
 /*void test_add_and_read_different_sizes(const utest_stats_t *stats, void *user_ctx)
