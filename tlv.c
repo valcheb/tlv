@@ -44,6 +44,6 @@ tlv_elem_t* tlv_end(const tlv_t* tlv)
 
 tlv_elem_t* tlv_next(const tlv_elem_t* elem)
 {
-    int tsize = sizeof(elem->type) + sizeof(elem->length) + elem->length;
-    return (tlv_elem_t *) (elem + tsize);
+    int tsize = sizeof(tlv_elem_t) + elem->length;
+    return (tlv_elem_t *) ((uint8_t *)elem + tsize);
 }
