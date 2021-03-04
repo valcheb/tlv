@@ -19,7 +19,7 @@ const uint32_t U32  = 0xFACEC0DE;
 /*#define TEST_TLV_ELEM(elem, val) \
     test_tlv_elem(elem, TYPE_##val, sizeof(val), &val)*/
 
-void test_add()
+void test_add_same_type_different_size()
 {
     tlv_t tlv;
     tlv_init(&tlv, TLV_BUF, TLV_SIZE);
@@ -28,149 +28,39 @@ void test_add()
     assert(tlv_add(&tlv, TYPE_U8, sizeof(U8_2), (uint8_t *)&U8_2) == true);
     assert(tlv_add(&tlv, TYPE_U8, sizeof(U16), (uint8_t *)&U16) == true);
     assert(tlv_add(&tlv, TYPE_U8, sizeof(U32), (uint8_t *)&U32) == true);
+
+    tlv_elem_t *elem = tlv_begin(&tlv);
+    while(elem != tlv_end(&tlv))
+    {
+        assert(elem->type == TYPE_U8);
+        elem = tlv_next(elem);
+    }
+    assert(elem == tlv_end(&tlv));
 }
 
-/*void test_add_and_read_different_sizes(const utest_stats_t *stats, void *user_ctx)
+void test_add_same_size_different_type()
 {
     tlv_t tlv;
-    ushort_t size =
-        TLV_HEADER_SIZE + 1 +
-        TLV_HEADER_SIZE + 2 +
-        TLV_HEADER_SIZE + 4;
-    tlv_elem_t *elem = NULL;
+    tlv_init(&tlv, TLV_BUF, TLV_SIZE);
 
-    tlv_init(&tlv, TLV_BUF, size);
+    assert(tlv_add(&tlv, TYPE_U8, sizeof(U8), (uint8_t *)&U8) == true);
+    assert(tlv_add(&tlv, TYPE_U16, sizeof(U8), (uint8_t *)&U8) == true);
+    assert(tlv_add(&tlv, TYPE_U32, sizeof(U8), (uint8_t *)&U8) == true);
 
-    elem = tlv_add(&tlv, TYPE_U8, sizeof(U8));
-    UTEST_ASSERT(elem != NULL);
-    *(uint8_t *)tlv_get_value(elem) = U8;
-
-    elem = tlv_add(&tlv, TYPE_U16, sizeof(U16));
-    UTEST_ASSERT(elem != NULL);
-    *(uint16_t *)tlv_get_value(elem) = U16;
-
-    elem = tlv_add(&tlv, TYPE_U32, sizeof(U32));
-    UTEST_ASSERT(elem != NULL);
-    *(uint32_t *)tlv_get_value(elem) = U32;
-
-    elem = tlv_begin(&tlv);
-    UTEST_ASSERT(elem < tlv_end(&tlv));
-    UTEST_ASSERT(TEST_TLV_ELEM(elem, U8));
-
-    elem = tlv_next(elem);
-    UTEST_ASSERT(elem < tlv_end(&tlv));
-    UTEST_ASSERT(TEST_TLV_ELEM(elem, U16));
-
-    elem = tlv_next(elem);
-    UTEST_ASSERT(elem < tlv_end(&tlv));
-    UTEST_ASSERT(TEST_TLV_ELEM(elem, U32));
-
-    elem = tlv_next(elem);
-    UTEST_ASSERT(elem >= tlv_end(&tlv));
-}*/
-
-/*void test_same_type_different_size(const utest_stats_t *stats, void *user_ctx)
-{
-    tlv_t tlv;
-    ushort_t size =
-        TLV_HEADER_SIZE + 1 +
-        TLV_HEADER_SIZE + 2;
-    tlv_elem_t *elem = NULL;
-
-    bool success = tlv_init(&tlv, TLV_BUF, size);
-    UTEST_ASSERT(success);
-
-    elem = tlv_add(&tlv, TYPE_U8, sizeof(U8));
-    UTEST_ASSERT(elem != NULL);
-    *(uint8_t *)tlv_get_value(elem) = U8;
-
-    elem = tlv_add(&tlv, TYPE_U8, sizeof(U16));
-    UTEST_ASSERT(elem != NULL);
-    *(uint16_t *)tlv_get_value(elem) = U16;
-
-    elem = tlv_begin(&tlv);
-    UTEST_ASSERT(elem < tlv_end(&tlv));
-    UTEST_ASSERT(TEST_TLV_ELEM(elem, U8));
-
-    elem = tlv_next(elem);
-    UTEST_ASSERT(elem < tlv_end(&tlv));
-    UTEST_ASSERT(test_tlv_elem(elem, TYPE_U8, sizeof(U16), &U16));
-}*/
-
-/*void test_different_type_same_size(const utest_stats_t *stats, void *user_ctx)
-{
-    tlv_t tlv;
-    ushort_t size =
-        TLV_HEADER_SIZE + 1 +
-        TLV_HEADER_SIZE + 1;
-    tlv_elem_t *elem = NULL;
-
-    bool success = tlv_init(&tlv, TLV_BUF, size);
-    UTEST_ASSERT(success);
-
-    elem = tlv_add(&tlv, TYPE_U8, sizeof(U8));
-    UTEST_ASSERT(elem != NULL);
-    *(uint8_t *)tlv_get_value(elem) = U8;
-
-    elem = tlv_add(&tlv, TYPE_U16, sizeof(U8_2));
-    UTEST_ASSERT(elem != NULL);
-    *(uint8_t *)tlv_get_value(elem) = U8_2;
-
-    elem = tlv_begin(&tlv);
-    UTEST_ASSERT(elem < tlv_end(&tlv));
-    UTEST_ASSERT(TEST_TLV_ELEM(elem, U8));
-
-    elem = tlv_next(elem);
-    UTEST_ASSERT(elem < tlv_end(&tlv));
-    UTEST_ASSERT(test_tlv_elem(elem, TYPE_U16, sizeof(U8_2), &U8_2));
-}*/
-
-/*void test_add_no_mem(const utest_stats_t *stats, void *user_ctx)
-{
-    tlv_t tlv;
-    ushort_t size = TLV_HEADER_SIZE + 1;
-    tlv_elem_t *elem = NULL;
-
-    bool success = tlv_init(&tlv, TLV_BUF, size);
-    UTEST_ASSERT(success);
-    UTEST_ASSERT(tlv_begin(&tlv) == tlv_end(&tlv));
-
-    elem = tlv_add(&tlv, TYPE_U16, sizeof(U16));
-    UTEST_ASSERT(elem == NULL);
-    UTEST_ASSERT(tlv_begin(&tlv) == tlv_end(&tlv));
-}*/
-
-/*void test_add_in_the_middle_of_iteration(const utest_stats_t *stats, void *user_ctx)
-{
-    tlv_t tlv;
-    ushort_t size =
-        TLV_HEADER_SIZE + 1 +
-        TLV_HEADER_SIZE + 2;
-    tlv_elem_t *first = NULL;
-    tlv_elem_t *elem = NULL;
-
-    bool success = tlv_init(&tlv, TLV_BUF, size);
-    UTEST_ASSERT(success);
-
-    elem = tlv_add(&tlv, TYPE_U8, sizeof(U8));
-    UTEST_ASSERT(elem != NULL);
-    *(uint8_t *)tlv_get_value(elem) = U8;
-
-    first = tlv_begin(&tlv);
-    UTEST_ASSERT(TEST_TLV_ELEM(first, U8));
-
-    elem = tlv_add(&tlv, TYPE_U16, sizeof(U16));
-    UTEST_ASSERT(elem != NULL);
-    *(uint16_t *)tlv_get_value(elem) = U16;
-
-    UTEST_ASSERT(TEST_TLV_ELEM(first, U8));
-    elem = tlv_next(first);
-    UTEST_ASSERT(TEST_TLV_ELEM(elem, U16));
-}*/
+    tlv_elem_t *elem = tlv_begin(&tlv);
+    while(elem != tlv_end(&tlv))
+    {
+        assert((uint8_t)*elem->value == U8);
+        assert(elem->length == sizeof(U8));
+        elem = tlv_next(elem);
+    }
+    assert(elem == tlv_end(&tlv));
+}
 
 int main()
 {
-    test_add();
+    test_add_same_type_different_size();
+    test_add_same_size_different_type();
 
     return 0;
 }
