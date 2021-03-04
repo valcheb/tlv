@@ -22,10 +22,7 @@ bool tlv_add(tlv_t* tlv, const tlv_elem_t *elem)
         return false;
     }
 
-    tlv_elem_t *telem = (tlv_elem_t *)tlv->end;
-    telem->type = elem->type;
-    telem->length = elem->length;
-    memcpy(telem->value, elem->value, elem->length);
+    memcpy((tlv_elem_t *)tlv->end, elem, tsize);
 
     tlv->end += tsize;
 
