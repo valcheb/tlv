@@ -92,11 +92,34 @@ void test_add_no_memory()
     assert(tlv_add(&tlv, TYPE_U8, sizeof(U8), (uint8_t *)&U8) == false);
 }
 
+void test_add_in_middle()
+{
+    tlv_t tlv;
+    tlv_init(&tlv, TLV_BUF, TLV_SIZE);
+
+    tlv_add(&tlv, TYPE_U8, sizeof(U8), (uint8_t *)&U8);
+
+    tlv_elem_t *first = tlv_begin(&tlv);
+    assert(first->type == TYPE_U8);
+    assert(first->length == sizeof(U8));
+    assert((uint8_t)*(uint8_t *)first->value == U8);
+
+    tlv_add(&tlv, TYPE_U16, sizeof(U16), (uint8_t *)&U16);
+    tlv_elem_t *second = tlv_next(first);
+
+    assert(second->type == TYPE_U16);
+    assert(second->length == sizeof(U16));
+    assert((uint16_t)*(uint16_t *)second->value == U16);
+
+    assert(tlv_next(second) == tlv_end(&tlv));
+}
+
 int main()
 {
     test_add_same_type_different_size();
     test_add_same_size_different_type();
     test_add_no_memory();
+    test_add_in_middle();
 
     return 0;
 }
