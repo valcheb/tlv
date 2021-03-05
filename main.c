@@ -83,10 +83,20 @@ void test_add_same_size_different_type()
     assert(elem == tlv_end(&tlv));
 }
 
+void test_add_no_memory()
+{
+    tlv_t tlv;
+    uint8_t tlv_size = 4;
+    tlv_init(&tlv, TLV_BUF, tlv_size);
+
+    assert(tlv_add(&tlv, TYPE_U8, sizeof(U8), (uint8_t *)&U8) == false);
+}
+
 int main()
 {
     test_add_same_type_different_size();
     test_add_same_size_different_type();
+    test_add_no_memory();
 
     return 0;
 }
