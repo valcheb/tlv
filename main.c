@@ -30,11 +30,27 @@ void test_add_same_type_different_size()
     assert(tlv_add(&tlv, TYPE_U8, sizeof(U32), (uint8_t *)&U32) == true);
 
     tlv_elem_t *elem = tlv_begin(&tlv);
-    while(elem != tlv_end(&tlv))
-    {
-        assert(elem->type == TYPE_U8);
-        elem = tlv_next(elem);
-    }
+
+    assert(elem->type == TYPE_U8);
+    assert(elem->length == sizeof(U8));
+    assert((uint8_t)*(uint8_t *)elem->value == U8);
+    elem = tlv_next(elem);
+
+    assert(elem->type == TYPE_U8);
+    assert(elem->length == sizeof(U8_2));
+    assert((uint8_t)*(uint8_t *)elem->value == U8_2);
+    elem = tlv_next(elem);
+
+    assert(elem->type == TYPE_U8);
+    assert(elem->length == sizeof(U16));
+    assert((uint16_t)*(uint16_t *)elem->value == U16);
+    elem = tlv_next(elem);
+
+    assert(elem->type == TYPE_U8);
+    assert(elem->length == sizeof(U32));
+    assert((uint32_t)*(uint32_t *)elem->value == U32);
+    elem = tlv_next(elem);
+
     assert(elem == tlv_end(&tlv));
 }
 
@@ -48,12 +64,22 @@ void test_add_same_size_different_type()
     assert(tlv_add(&tlv, TYPE_U32, sizeof(U8), (uint8_t *)&U8) == true);
 
     tlv_elem_t *elem = tlv_begin(&tlv);
-    while(elem != tlv_end(&tlv))
-    {
-        assert((uint8_t)*elem->value == U8);
-        assert(elem->length == sizeof(U8));
-        elem = tlv_next(elem);
-    }
+
+    assert(elem->type == TYPE_U8);
+    assert(elem->length == sizeof(U8));
+    assert((uint8_t)*(uint8_t *)elem->value == U8);
+    elem = tlv_next(elem);
+
+    assert(elem->type == TYPE_U16);
+    assert(elem->length == sizeof(U8));
+    assert((uint8_t)*(uint8_t *)elem->value == U8);
+    elem = tlv_next(elem);
+
+    assert(elem->type == TYPE_U32);
+    assert(elem->length == sizeof(U8));
+    assert((uint8_t)*(uint8_t *)elem->value == U8);
+    elem = tlv_next(elem);
+
     assert(elem == tlv_end(&tlv));
 }
 
